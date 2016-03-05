@@ -3,7 +3,9 @@
     <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src="/static/scripts/databaseManager.js" type="text/javascript"></script>
-
+    <script type="text/javascript" async
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
   </head>
   <body>
     <div id='messagesDiv'></div>
@@ -13,7 +15,9 @@
       <br/>
       <button class="msgButton"> Get Raw Database Info </button>
     </div>
-    <div class="showMessages">
+    <form>
+      <input id="target" type="text" value="Hello there">
+    </form>    <div class="showMessages">
     </div>
   </body>
 </html>
