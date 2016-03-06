@@ -1,6 +1,9 @@
 #!flask/bin/python
 from __future__ import division
 from app import app
+
+app.run(debug=True)
+
 # from firebase import firebase
 # import math
 # import json
@@ -77,8 +80,4 @@ from app import app
 #             tf_idf_count[doc][word] = tf_count[doc][word] * idf_count[word]
 #     return tf_idf_count
 # tf_idf()
-
-
-app.run(debug=True)
-
 
