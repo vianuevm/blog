@@ -1,6 +1,5 @@
 from flask import render_template, request, jsonify
 import requests
-from firebase import firebase
 import math
 from app import app
 import json
