@@ -1,15 +1,4 @@
 $(document).ready(function() {
- var myDataRef = new Firebase('https://zhacks.firebaseio.com/');
-  var dbData = "";
-  $('#messageInput').keypress(function (e) {
-    if (e.keyCode == 13) {
-      var name = $('#nameInput').val();
-      var text = $('#messageInput').val();
-      myDataRef.push({name: name, text: text});
-      $('#messageInput').val('');
-    }
-  });
-
   $('#target').keypress(function() {
       var keycode = (event.keyCode ? event.keyCode : event.which);
       if(keycode == '13'){
@@ -26,7 +15,11 @@ $(document).ready(function() {
             console.log('Failure!');
           },
           success: function(data) {
-            console.log(data);
+            /**
+            *   Gotta love super hacky code when you're feelin' lazy
+            *   All this does is put the computer data into a Latex format
+            *   so it's super pretty and fun.
+            */
             var eq = "$$\\frac{";
             for(var i = 0; i < data["numerator"].length; ++i) {
               eq += data.numerator[i];
@@ -56,37 +49,18 @@ $(document).ready(function() {
 
             parser = new DOMParser();
             doc = parser.parseFromString(eq, "text/xml");
-            $('.showMessages').append(eq);
-            $('.showMessages').append(data.document);
+            var finalEq = "<div class=\"panel panel-default\">" + 
+              "<div class=\"panel-heading\"> <b>Document:</b> " + data.document + "</div>" + 
+              "<div class=\"panel-body\"> <b>Equation:</b> " +
+                 eq + 
+              "</div>" +
+            "</div>";
+
+            $('.showMessages').append(finalEq);
             MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
           }
         })
         return false;
     }
-
   })
-
-  $('.msgButton').click(function() {
-      myDataRef.once('value', function(snapshot) {
-        dbData = snapshot.val();
-        for(var item in dbData) {
-          if(dbData.hasOwnProperty(item)) {
-            console.log(item);
-            var arr = dbData[item].text.split(" ");
-            var termFrequency = (dbData[item].text.match(/guyss/g) || []).length / arr.length;            
-          }
-        }
-      });
-      $('.showMessages').append(JSON.stringify(dbData));
-  });
-
-  myDataRef.on('child_added', function(snapshot) {
-    var message = snapshot.val();
-    dbData = snapshot.val();
-    displayChatMessage(message.name, message.text);
-  });
-  function displayChatMessage(name, text) {
-    $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
-    $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
-  };
 });

@@ -1,4 +1,5 @@
 from flask import render_template, request, jsonify
+import requests
 from firebase import firebase
 import math
 from app import app
@@ -18,9 +19,13 @@ def db_endpoint():
 
 @app.route('/tfidf', methods = ['POST'])
 def retrieve_document():
-    fb = firebase.FirebaseApplication('https://zhacks.firebaseio.com/', None)
-    result = fb.get('/', None)
-
+    # fb = firebase.FirebaseApplication('https://zhacks.firebaseio.com/', None)
+    # result = fb.get('/', None)
+    url = 'http://api.icndb.com/jokes/random/1000'
+    data = ''
+    result = requests.get(url, data=data)
+    document_array = json.loads(result.text)['value']
+    print len(document_array)
     query = request.json['query']
     for i in range(0, len(query)):
         query[i] = query[i].lower()
@@ -31,7 +36,10 @@ def retrieve_document():
     query_tf = calc_query_tf(query)
     query_tf_idf = calc_query_tf_idf(query_tf, inverted_index)
     closest_matched_document = compare_documents(query_tf_idf, inverted_index)
-    closest_matched_document["document"] = result[closest_matched_document["document"]]["text"]
+    url = "http://api.icndb.com/jokes/" + closest_matched_document["document"]
+    result = requests.get(url, data=data)
+    joke = json.loads(result.text)["value"]["joke"]
+    closest_matched_document["document"] = joke
     return jsonify(closest_matched_document)
 
 

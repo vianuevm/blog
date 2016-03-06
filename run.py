@@ -4,7 +4,14 @@ from app import app
 from firebase import firebase
 import math
 import json
+import requests
 
+url = 'http://api.icndb.com/jokes/random/1000'
+data = ''
+response = requests.get(url, data=data)
+print response
+joke_array = json.loads(response.text)['value']
+print joke_array
 
 
 def total_word_count(total_words, result):
@@ -20,16 +27,23 @@ def create_inverted_index(tf_idf_count, idf_count):
         json.dump(inverted_index, fp)
 
 def tf_idf():
-    fb = firebase.FirebaseApplication('https://zhacks.firebaseio.com/', None)
-    result = fb.get('/', None)
+    # fb = firebase.FirebaseApplication('https://zhacks.firebaseio.com/', None)
+    # result = fb.get('/', None)
+    url = 'http://api.icndb.com/jokes/random/1000'
+    data = ''
+    result = requests.get(url, data=data)
+    document_array = json.loads(response.text)['value']
     if(not result):
         return
     total_words = []
-    for doc in result:
-        result[doc]["text"] = result[doc]["text"].lower()
-    total_words = total_word_count(total_words, result)
-    tf_count = get_tf(result)
-    idf_count = get_idf(result, total_words)
+    doc_result = {}
+    for doc in document_array:
+        document_name = doc["id"]
+        doc_result[document_name] = {}
+        doc_result[document_name]["text"] = doc["joke"].lower()
+    total_words = total_word_count(total_words, doc_result)
+    tf_count = get_tf(doc_result)
+    idf_count = get_idf(doc_result, total_words)
     tf_idf_count = get_tf_idf(tf_count, idf_count)
     create_inverted_index(tf_idf_count, idf_count)
 
