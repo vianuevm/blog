@@ -11,15 +11,8 @@ def index():
     return render_template("index.html")
 
 
-@app.route('/db')
-def db_endpoint():
-    return render_template("databaseTestPage.html")
-
-
 @app.route('/tfidf', methods = ['POST'])
 def retrieve_document():
-    # fb = firebase.FirebaseApplication('https://zhacks.firebaseio.com/', None)
-    # result = fb.get('/', None)
     url = 'http://api.icndb.com/jokes/random/1000'
     data = ''
     result = requests.get(url, data=data)
@@ -28,7 +21,6 @@ def retrieve_document():
     query = request.json['query']
     for i in range(0, len(query)):
         query[i] = query[i].lower()
-
 
     inverted_index = open("result.json").read()
     inverted_index = json.loads(inverted_index)
